@@ -1,14 +1,9 @@
-FROM node:alpine
-
-WORKDIR /usr/src/app
-
-COPY package.json ./
+FROM node:13 AS builder
+COPY package.json .
 RUN npm install
 COPY . .
-ENV REACT_APP_URL_BACKEND=http://localhost:3333
-
+ENV REACT_APP_URL_BACKEND=http://localhost:5000
 RUN npm run build
 
-EXPOSE 3000
-
-CMD npm start
+FROM nginx
+COPY --from=builder build /usr/share/nginx/html 

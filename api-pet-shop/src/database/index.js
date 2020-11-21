@@ -1,21 +1,7 @@
-import mongoose from "mongoose";
+const mongoose = require('mongoose');
+const url = `mongodb://127.0.0.1:${process.env.MONGO_PORT}/${process.env.MONGO_DB}`;
+const DATABASE_URL = url;
 
-class Database {
-    constructor() {
-        this.mongo();
-    }
+mongoose.connect(DATABASE_URL, {useNewUrlParser: true, useFindAndModify: true});
 
-    mongo() {
-        const url = `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOSTNAME}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}?authSource=admin`;
-        this.mongoConnection = mongoose.connect(
-            url,
-
-            {
-                useNewUrlParser: true,
-                useFindAndModify: true,
-            }
-        );
-    }
-}
-
-export default new Database();
+module.exports = mongoose.connection;

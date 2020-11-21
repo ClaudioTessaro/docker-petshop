@@ -1,45 +1,36 @@
-version: "3.2"
+version: "3.6" 
 services:
-  db:
-    image: mongo:4.2
-    container_name: db
-    restart: always
-    ports:
-      - 27017:27017
-    environment:
-      MONGO_USERNAME: admin
-      MONGO_PASSWORD: admin
-      MONGO_DB: petshop
-  backend:
-    container_name: api
-    build: ./api-pet-shop
-    command: yarn dev
-    restart: always
-    depends_on:
-      - db
-    ports:
-      - "3333:3333"
-    volumes:
-      - .:/usr/app
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "5"
-  frontend:
-    container_name: front
-    build: ./front-end-petshop
-    command: yarn start
-    restart: always
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend
-      - db
-    volumes:
-      - .:/usr/src/app
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "5"
+    web:
+        build:
+            context: front-end-petshop
+            dockerfile: Dockerfile
+        ports:
+            - 2000:80
+        networks:
+            - petshop-network
+        depends_on:
+            - api
+            - mongodb
+
+    api:
+        build:
+            context: api-pet-shop
+            dockerfile: Dockerfile
+        ports:
+            - 3000:3000
+        networks:
+            - petshop-network
+        depends_on:
+            - mongodb
+
+    mongodb:
+        image: mongo
+        networks:
+            - petshop-network
+        ports:
+            - "27022:27017"
+
+
+networks:
+    petshop-network:
+        driver: bridge
