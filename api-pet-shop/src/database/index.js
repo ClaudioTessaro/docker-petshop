@@ -1,7 +1,13 @@
 const mongoose = require('mongoose');
-const url = `mongodb://127.0.0.1:${process.env.MONGO_PORT}/${process.env.MONGO_DB}`;
+const url = `mongodb://mongodb:${process.env.MONGO_PORT}/${process.env.MONGO_DB}?authSource=admin`;
 const DATABASE_URL = url;
 
-mongoose.connect(DATABASE_URL, {useNewUrlParser: true, useFindAndModify: true});
+mongoose.connect(DATABASE_URL,
+    {
+        useNewUrlParser: true,
+        useFindAndModify: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true
+});
 
 module.exports = mongoose.connection;
